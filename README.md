@@ -4,7 +4,7 @@
 
 AI Product Analysis CLI is a powerful command-line tool that leverages advanced language models and a sophisticated graph-based approach to provide comprehensive analyses of AI products. This tool is designed for researchers, product managers, and AI enthusiasts who want to gain deep insights into various AI products and their potential impacts.
 
-This project is inspired by the STORM (State-of-the-art Research Methods) example from the LangChain library. You can find the original example here: [STORM Example](https://github.com/langchain-ai/langgraph/blob/main/examples/storm/storm.ipynb)
+This project is inspired by the STORM (Synthesis of Topic Outlines through Retrieval and Multi-perspective) example from the LangChain library. You can find the original example here: [STORM Example](https://github.com/langchain-ai/langgraph/blob/main/examples/storm/storm.ipynb)
 
 ## Features
 
@@ -131,4 +131,4 @@ This tool uses AI models and web search capabilities. The accuracy and completen
 
 ## Acknowledgements
 
-This project is inspired by and adapts concepts from the STORM (State-of-the-art Research Methods) example in the LangChain library. We are grateful to the LangChain team for their innovative work in the field of AI and language models. The original STORM example can be found at: [https://github.com/langchain-ai/langgraph/blob/main/examples/storm/storm.ipynb](https://github.com/langchain-ai/langgraph/blob/main/examples/storm/storm.ipynb)
+This project is inspired by and adapts concepts from the STORM (Synthesis of Topic Outlines through Retrieval and Multi-perspective) example in the LangChain library. We are grateful to the LangChain team for their innovative work in the field of AI and language models. The original STORM example can be found at: [https://github.com/langchain-ai/langgraph/blob/main/examples/storm/storm.ipynb](https://github.com/langchain-ai/langgraph/blob/main/examples/storm/storm.ipynb)
