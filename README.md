@@ -15,34 +15,6 @@ This project is inspired by the STORM (Synthesis of Topic Outlines through Retri
 - Writes comprehensive sections for each aspect of the analysis
 - Produces a final, detailed analysis report in Markdown format
 
-## Installation
-
-To install the AI Product Analysis CLI globally, use the following command:
-
-```bash
-pnpm add -g ai-product-analysis-cli
-```
-
-## Usage
-
-After installation, you can use the CLI with the following command:
-
-```bash
-ai-product-analysis analyze "Product Name"
-```
-
-For example:
-
-```bash
-ai-product-analysis analyze "GPT-4"
-```
-
-You can also specify a custom thread ID for persistence:
-
-```bash
-ai-product-analysis analyze "GPT-4" --thread-id my-custom-thread-id
-```
-
 ## How It Works
 
 The AI Product Analysis CLI uses a sophisticated graph-based approach to generate comprehensive analyses, inspired by the STORM methodology. Here's a high-level overview of the process:
