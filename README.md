@@ -2,9 +2,9 @@
 
 ## Overview
 
-AI Product Analysis CLI is a powerful command-line tool that leverages advanced language models and a sophisticated graph-based approach to provide comprehensive analyses of AI products. This tool is designed for researchers, product managers, and AI enthusiasts who want to gain deep insights into various AI products and their potential impacts.
+AI Product Analysis CLI is a powerful command-line tool that leverages advanced language models and a sophisticated graph-based approach to provide comprehensive analyses of AI products. This tool is designed for researchers, product managers, and AI enthusiasts who want to gain deep insights into various AI products and their potential impacts across different domains.
 
-This project is inspired by the STORM (Synthesis of Topic Outlines through Retrieval and Multi-perspective) example from the LangChain library. You can find the original example here: [STORM Example](https://github.com/langchain-ai/langgraph/blob/main/examples/storm/storm.ipynb)
+This project is inspired by the STORM (Synthesis of Topic Outlines through Retrieval and Multi-perspective) methodology from the LangChain library, adapted for AI product analysis.
 
 ## Features
 
@@ -14,6 +14,7 @@ This project is inspired by the STORM (Synthesis of Topic Outlines through Retri
 - Refines analysis outlines based on gathered information
 - Writes comprehensive sections for each aspect of the analysis
 - Produces a final, detailed analysis report in Markdown format
+- Supports analysis of AI products across various domains and use cases
 
 ## How It Works
 
@@ -36,8 +37,6 @@ graph TD
         K --> I
         J -->|No| L[End Interview]
     end
-
-
 ```
 
 1. **Generate Outline**: Creates an initial structure for the analysis.
@@ -64,6 +63,16 @@ TAVILY_API_KEY=your_tavily_api_key
 
 Replace `your_openai_api_key` and `your_tavily_api_key` with your actual API keys.
 
+## Usage
+
+After setting up the project, you can use the CLI as follows:
+
+```bash
+node dist/main.js analyze "AI Product Name" --output analysis.md
+```
+
+This will generate an analysis of the specified AI product, saving the output to the specified file.
+
 ## Development
 
 To set up the project for development:
@@ -86,7 +95,7 @@ To set up the project for development:
 
 4. Run the CLI locally:
    ```bash
-   node dist/main.js analyze "Product Name"
+   node dist/main.js analyze "AI Product Name"
    ```
 
 ## Contributing

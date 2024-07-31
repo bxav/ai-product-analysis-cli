@@ -1,10 +1,18 @@
 import { Injectable } from '@nestjs/common';
-import { END, START, StateGraph, StateGraphArgs } from '@langchain/langgraph';
-import { MemorySaver } from '@langchain/langgraph';
+import {
+  StateGraph,
+  MemorySaver,
+  START,
+  StateGraphArgs,
+  END,
+} from '@langchain/langgraph';
 import { ExpertService } from './expert.service';
 import { ProductAnalysisState } from './types';
 import { AnalysisWritingService } from './analysis-writing.service';
 import { OutlineService } from './outline.service';
+import { Spinner } from 'cli-spinner';
+import chalk from 'chalk';
+import * as fs from 'fs';
 
 @Injectable()
 export class AIProductAnalysisService {
@@ -17,16 +25,56 @@ export class AIProductAnalysisService {
   async executeProductAnalysis(
     product: string,
     threadId: string,
+    outputFile?: string,
   ): Promise<string> {
-    const workflow = this.createWorkflow();
-    const app = workflow.compile({ checkpointer: new MemorySaver() });
+    const spinner = new Spinner('Initializing analysis... %s');
+    spinner.setSpinnerString('|/-\\');
+    spinner.start();
 
-    const finalState = await app.invoke(
-      { product },
-      { configurable: { thread_id: threadId } },
-    );
+    try {
+      const workflow = this.createWorkflow();
+      const app = workflow.compile({ checkpointer: new MemorySaver() });
 
-    return finalState.analysis;
+      spinner.setSpinnerTitle('Generating outline... %s');
+      const finalState = await app.invoke(
+        { product },
+        { configurable: { thread_id: threadId } },
+      );
+
+      spinner.stop(true);
+      console.log(chalk.green('Analysis complete!'));
+
+      const summary = this.generateSummary(finalState);
+      const fullAnalysis = finalState.analysis;
+
+      console.log('\n' + chalk.bold.green('Analysis Summary:'));
+      console.log(summary);
+
+      if (outputFile) {
+        fs.writeFileSync(outputFile, fullAnalysis);
+        console.log(chalk.cyan(`\nFull analysis saved to ${outputFile}`));
+      }
+
+      return fullAnalysis;
+    } catch (error) {
+      spinner.stop(true);
+      console.error(chalk.red('Analysis failed'));
+      console.error(chalk.red('Error during analysis:'), error.message);
+      throw error;
+    }
+  }
+
+  private generateSummary(state: ProductAnalysisState): string {
+    const keyPoints = state.sections
+      .map((section) => `- ${section.section_title}`)
+      .join('\n');
+
+    return `
+${chalk.bold('Product:')} ${state.product}
+${chalk.bold('Number of sections:')} ${state.sections.length}
+${chalk.bold('Key points covered:')}
+${keyPoints}
+    `;
   }
 
   private createWorkflow() {
