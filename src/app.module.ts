@@ -8,6 +8,7 @@ import { ExpertService } from './expert.service';
 import { LLMFactoryService } from './llm-factory.service';
 import { AnalysisWritingService } from './analysis-writing.service';
 import { OutlineService } from './outline.service';
+import { LoggingService } from './logging.service';
 
 @Module({
   imports: [ConfigModule.forRoot()],
@@ -29,6 +30,7 @@ import { OutlineService } from './outline.service';
     AIProductAnalysisService,
     SearchService,
     AnalyzeProductCommand,
+    LoggingService,
   ],
 })
 export class AppModule {}

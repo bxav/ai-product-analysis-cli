@@ -12,6 +12,7 @@ import { delay } from './utils';
 import { AIMessage, HumanMessage } from '@langchain/core/messages';
 import { SearchService } from './search.service';
 import { LLMFactoryService } from './llm-factory.service';
+import { LoggingService } from './logging.service';
 
 @Injectable()
 export class ExpertService {
@@ -21,6 +22,7 @@ export class ExpertService {
   constructor(
     private readonly llmFactoryService: LLMFactoryService,
     private readonly search: SearchService,
+    private readonly loggingService: LoggingService,
   ) {
     this.fastLLM = this.llmFactoryService.createFastLLM();
     this.longContextLLM = this.llmFactoryService.createLongContextLLM();
@@ -40,10 +42,12 @@ export class ExpertService {
       ],
     ]);
 
+    this.loggingService.startSpinner('Generating expert personas');
     const expertChain = expertPrompt.pipe(
       this.longContextLLM.withStructuredOutput(groupExpertSchema),
     );
     const experts = await expertChain.invoke({ product: state.product });
+    this.loggingService.stopSpinner('Expert personas generated successfully');
     return { experts: experts.experts };
   }
 
@@ -51,10 +55,18 @@ export class ExpertService {
     state: ProductAnalysisState,
   ): Promise<Partial<ProductAnalysisState>> {
     const interviewGraph = this.createInterviewGraph();
+    this.loggingService.startSpinner('Conducting expert interviews');
     const interviewResults = await Promise.all(
-      state.experts.map((expert) =>
-        this.conductSingleInterview(state.product, expert, interviewGraph),
-      ),
+      state.experts.map((expert) => {
+        return this.conductSingleInterview(
+          state.product,
+          expert,
+          interviewGraph,
+        );
+      }),
+    );
+    this.loggingService.stopSpinner(
+      'All expert interviews completed successfully',
     );
     return { interview_results: interviewResults };
   }
@@ -175,6 +187,9 @@ export class ExpertService {
   }
 
   private formatSearchResults(results: any[]): string {
+    if (results.length === 0) {
+      return 'No search results available.';
+    }
     return results
       .map(
         (result, index) =>

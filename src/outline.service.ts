@@ -4,13 +4,17 @@ import { ChatOpenAI } from '@langchain/openai';
 import { delay } from './utils';
 import { ChatPromptTemplate } from '@langchain/core/prompts';
 import { ProductAnalysisState, productOutlineSchema } from './types';
+import { LoggingService } from './logging.service';
 
 @Injectable()
 export class OutlineService {
   private readonly fastLLM: ChatOpenAI;
   private readonly longContextLLM: ChatOpenAI;
 
-  constructor(private readonly llmFactoryService: LLMFactoryService) {
+  constructor(
+    private readonly llmFactoryService: LLMFactoryService,
+    private readonly loggingService: LoggingService,
+  ) {
     this.fastLLM = this.llmFactoryService.createFastLLM();
     this.longContextLLM = this.llmFactoryService.createLongContextLLM();
   }
@@ -26,10 +30,12 @@ export class OutlineService {
       ['user', '{product}'],
     ]);
 
+    this.loggingService.startSpinner('Generating initial outline');
     const outlineChain = outlinePrompt.pipe(
       this.fastLLM.withStructuredOutput(productOutlineSchema),
     );
     const outline = await outlineChain.invoke({ product: state.product });
+    this.loggingService.stopSpinner('Initial outline generated successfully');
     return { outline };
   }
 
@@ -49,11 +55,15 @@ export class OutlineService {
     const refineChain = refinePrompt.pipe(
       this.longContextLLM.withStructuredOutput(productOutlineSchema),
     );
+    this.loggingService.startSpinner(
+      'Refining outline based on expert interviews',
+    );
     await delay(1000);
     const refinedOutline = await refineChain.invoke({
       original_outline: JSON.stringify(state.outline),
       interviews: JSON.stringify(state.interview_results),
     });
+    this.loggingService.stopSpinner('Outline refined successfully');
     return { outline: refinedOutline };
   }
 }

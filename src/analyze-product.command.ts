@@ -1,10 +1,13 @@
 import { Command, CommandRunner, Option } from 'nest-commander';
 import { AIProductAnalysisService } from './ai-product-analysis.service';
-import chalk from 'chalk';
+import { LoggingService } from './logging.service';
 
 @Command({ name: 'analyze', description: 'Analyze an AI product' })
 export class AnalyzeProductCommand extends CommandRunner {
-  constructor(private readonly analysisService: AIProductAnalysisService) {
+  constructor(
+    private readonly analysisService: AIProductAnalysisService,
+    private readonly loggingService: LoggingService,
+  ) {
     super();
   }
 
@@ -13,7 +16,9 @@ export class AnalyzeProductCommand extends CommandRunner {
     options?: Record<string, any>,
   ): Promise<void> {
     if (passedParams.length === 0) {
-      console.error(chalk.red('Error: Please provide a product name to analyze.'));
+      this.loggingService.error(
+        'Error: Please provide a product name to analyze.',
+      );
       return;
     }
 
@@ -21,15 +26,28 @@ export class AnalyzeProductCommand extends CommandRunner {
     const outputFile = options?.output;
 
     try {
-      console.log(chalk.cyan(`Starting analysis for: ${product}`));
-      const analysis = await this.analysisService.executeProductAnalysis(product, 'thread-id', outputFile);
-      
+      this.loggingService.info(`Starting analysis for: ${product}`);
+      const analysis = await this.analysisService.executeProductAnalysis(
+        product,
+        'thread-id',
+        outputFile,
+      );
+
       if (!outputFile) {
-        console.log('\n' + chalk.bold.green('Full Analysis:'));
-        console.log(analysis);
+        this.loggingService.info('\nFull Analysis:');
+        this.loggingService.log(analysis);
       }
     } catch (error) {
-      console.error(chalk.red('Error during analysis:'), error.message);
+      this.loggingService.error('Analysis process encountered errors');
+      this.loggingService.error(`Error details: ${error.message}`);
+      this.loggingService.warn(
+        'The analysis may be incomplete or contain errors.',
+      );
+      if (outputFile) {
+        this.loggingService.info(
+          `Check ${outputFile} for any partial results.`,
+        );
+      }
     }
   }
 

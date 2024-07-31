@@ -4,12 +4,16 @@ import { ChatOpenAI } from '@langchain/openai';
 import { delay } from './utils';
 import { ChatPromptTemplate } from '@langchain/core/prompts';
 import { ProductAnalysisState } from './types';
+import { LoggingService } from './logging.service';
 
 @Injectable()
 export class AnalysisWritingService {
   private readonly longContextLLM: ChatOpenAI;
 
-  constructor(private readonly llmFactoryService: LLMFactoryService) {
+  constructor(
+    private readonly llmFactoryService: LLMFactoryService,
+    private readonly loggingService: LoggingService,
+  ) {
     this.longContextLLM = this.llmFactoryService.createLongContextLLM();
   }
 
@@ -28,9 +32,13 @@ export class AnalysisWritingService {
     ]);
     const sectionChain = sectionPrompt.pipe(this.longContextLLM);
 
+    this.loggingService.startSpinner('Writing analysis sections');
     const sections = await Promise.all(
       state.outline.sections.map(async (section) => {
         await delay(1000);
+        this.loggingService.updateSpinner(
+          `Writing section: ${section.section_title}`,
+        );
         const content = await sectionChain.invoke({
           product: state.product,
           section: JSON.stringify(section),
@@ -42,6 +50,7 @@ export class AnalysisWritingService {
         };
       }),
     );
+    this.loggingService.stopSpinner('All sections written successfully');
 
     return { sections };
   }
@@ -60,6 +69,8 @@ export class AnalysisWritingService {
       ],
     ]);
     const analysisChain = analysisPrompt.pipe(this.longContextLLM);
+
+    this.loggingService.startSpinner('Writing full analysis');
     await delay(1000);
     let analysis = await analysisChain.invoke({
       product: state.product,
@@ -70,7 +81,9 @@ export class AnalysisWritingService {
     let metadata = analysis.response_metadata;
 
     while (metadata?.finish_reason === 'length') {
-      console.log('Analysis truncated. Generating continuation...');
+      this.loggingService.info(
+        'Analysis truncated. Generating continuation...',
+      );
       const continuation = await this.generateAnalysisContinuation(
         state.product,
         fullAnalysis,
@@ -81,7 +94,7 @@ export class AnalysisWritingService {
       metadata = analysis.response_metadata;
     }
 
-    console.log('Final analysis metadata:', metadata);
+    this.loggingService.stopSpinner('Full analysis written successfully');
 
     return { analysis: fullAnalysis };
   }

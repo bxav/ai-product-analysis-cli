@@ -10,9 +10,8 @@ import { ExpertService } from './expert.service';
 import { ProductAnalysisState } from './types';
 import { AnalysisWritingService } from './analysis-writing.service';
 import { OutlineService } from './outline.service';
-import { Spinner } from 'cli-spinner';
-import chalk from 'chalk';
 import * as fs from 'fs';
+import { LoggingService } from './logging.service';
 
 @Injectable()
 export class AIProductAnalysisService {
@@ -20,6 +19,7 @@ export class AIProductAnalysisService {
     private readonly expertService: ExpertService,
     private readonly analysisWritingService: AnalysisWritingService,
     private readonly outlineService: OutlineService,
+    private readonly loggingService: LoggingService,
   ) {}
 
   async executeProductAnalysis(
@@ -27,39 +27,36 @@ export class AIProductAnalysisService {
     threadId: string,
     outputFile?: string,
   ): Promise<string> {
-    const spinner = new Spinner('Initializing analysis... %s');
-    spinner.setSpinnerString('|/-\\');
-    spinner.start();
-
     try {
       const workflow = this.createWorkflow();
       const app = workflow.compile({ checkpointer: new MemorySaver() });
 
-      spinner.setSpinnerTitle('Generating outline... %s');
       const finalState = await app.invoke(
         { product },
         { configurable: { thread_id: threadId } },
       );
 
-      spinner.stop(true);
-      console.log(chalk.green('Analysis complete!'));
+      this.loggingService.success('\nAnalysis completed successfully\n');
 
       const summary = this.generateSummary(finalState);
       const fullAnalysis = finalState.analysis;
 
-      console.log('\n' + chalk.bold.green('Analysis Summary:'));
-      console.log(summary);
+      this.loggingService.info('\nAnalysis Summary:');
+      this.loggingService.log(summary);
 
       if (outputFile) {
         fs.writeFileSync(outputFile, fullAnalysis);
-        console.log(chalk.cyan(`\nFull analysis saved to ${outputFile}`));
+        this.loggingService.info(`\nFull analysis saved to ${outputFile}`);
       }
 
       return fullAnalysis;
     } catch (error) {
-      spinner.stop(true);
-      console.error(chalk.red('Analysis failed'));
-      console.error(chalk.red('Error during analysis:'), error.message);
+      this.loggingService.stopSpinner();
+      this.loggingService.error('Analysis encountered issues');
+      this.loggingService.error(`Error details: ${error.message}`);
+      if (error.stack) {
+        this.loggingService.error(`Stack trace: ${error.stack}`);
+      }
       throw error;
     }
   }
@@ -70,9 +67,9 @@ export class AIProductAnalysisService {
       .join('\n');
 
     return `
-${chalk.bold('Product:')} ${state.product}
-${chalk.bold('Number of sections:')} ${state.sections.length}
-${chalk.bold('Key points covered:')}
+Product: ${state.product}
+Number of sections: ${state.sections.length}
+Key points covered:
 ${keyPoints}
     `;
   }
