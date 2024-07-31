@@ -1,3 +1,4 @@
+import * as fs from 'fs';
 import { Injectable } from '@nestjs/common';
 import {
   StateGraph,
@@ -6,11 +7,11 @@ import {
   StateGraphArgs,
   END,
 } from '@langchain/langgraph';
+
 import { ExpertService } from './expert.service';
-import { ProductAnalysisState } from './types';
+import { ProductAnalysisState } from '../types';
 import { AnalysisWritingService } from './analysis-writing.service';
 import { OutlineService } from './outline.service';
-import * as fs from 'fs';
 import { LoggingService } from './logging.service';
 
 @Injectable()

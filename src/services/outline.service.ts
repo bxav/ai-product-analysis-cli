@@ -1,9 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { LLMFactoryService } from './llm-factory.service';
 import { ChatOpenAI } from '@langchain/openai';
-import { delay } from './utils';
 import { ChatPromptTemplate } from '@langchain/core/prompts';
-import { ProductAnalysisState, productOutlineSchema } from './types';
+
+import { LLMFactoryService } from '../services/llm-factory.service';
+import { delay } from '../utils';
+import { ProductAnalysisState, productOutlineSchema } from '../types';
 import { LoggingService } from './logging.service';
 
 @Injectable()

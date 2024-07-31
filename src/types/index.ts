@@ -1,7 +1,6 @@
 import { z } from 'zod';
 import { BaseMessage } from '@langchain/core/messages';
 
-// Schema definitions
 export const productOutlineSchema = z.object({
   product_name: z.string().describe('The name of the AI product.'),
   sections: z
@@ -25,7 +24,6 @@ export const groupExpertSchema = z.object({
   experts: z.array(expertSchema).describe('List of expert personas.'),
 });
 
-// Type definitions
 export type ProductOutline = z.infer<typeof productOutlineSchema>;
 export type Expert = z.infer<typeof expertSchema>;
 

@@ -1,5 +1,6 @@
 import { TavilySearchResults } from '@langchain/community/tools/tavily_search';
 import { Injectable } from '@nestjs/common';
+
 import { LoggingService } from './logging.service';
 
 @Injectable()

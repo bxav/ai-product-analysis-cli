@@ -1,15 +1,16 @@
 import { ChatOpenAI } from '@langchain/openai';
-import { Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
+import { ChatPromptTemplate } from '@langchain/core/prompts';
+import { AIMessage, HumanMessage } from '@langchain/core/messages';
+import { END, START, StateGraph, StateGraphArgs } from '@langchain/langgraph';
+
 import {
   Expert,
   groupExpertSchema,
   InterviewState,
   ProductAnalysisState,
-} from './types';
-import { ChatPromptTemplate } from '@langchain/core/prompts';
-import { END, START, StateGraph, StateGraphArgs } from '@langchain/langgraph';
-import { delay } from './utils';
-import { AIMessage, HumanMessage } from '@langchain/core/messages';
+} from '../types';
+import { delay } from '../utils';
 import { SearchService } from './search.service';
 import { LLMFactoryService } from './llm-factory.service';
 import { LoggingService } from './logging.service';

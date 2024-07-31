@@ -1,14 +1,15 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { AIProductAnalysisService } from './ai-product-analysis.service';
-import { AnalyzeProductCommand } from './analyze-product.command';
 import { TavilySearchResults } from '@langchain/community/tools/tavily_search';
-import { SearchService } from './search.service';
-import { ExpertService } from './expert.service';
-import { LLMFactoryService } from './llm-factory.service';
-import { AnalysisWritingService } from './analysis-writing.service';
-import { OutlineService } from './outline.service';
-import { LoggingService } from './logging.service';
+
+import { AIProductAnalysisService } from './services/ai-product-analysis.service';
+import { AnalyzeProductCommand } from './commands/analyze-product.command';
+import { SearchService } from './services/search.service';
+import { ExpertService } from './services/expert.service';
+import { LLMFactoryService } from './services/llm-factory.service';
+import { AnalysisWritingService } from './services/analysis-writing.service';
+import { OutlineService } from './services/outline.service';
+import { LoggingService } from './services/logging.service';
 
 @Module({
   imports: [ConfigModule.forRoot()],
