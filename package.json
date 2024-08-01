@@ -15,8 +15,27 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
-    "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand"
+    "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
+    "prepublishOnly": "pnpm run build",
+    "version:patch": "pnpm version patch && git push --follow-tags",
+    "version:minor": "pnpm version minor && git push --follow-tags",
+    "version:major": "pnpm version major && git push --follow-tags"
   },
+  "keywords": [
+    "ai",
+    "product analysis",
+    "cli"
+  ],
+  "author": "Xavier Buillit",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bxav/ai-product-analysis-cli.git"
+  },
+  "bugs": {
+    "url": "https://github.com/bxav/ai-product-analysis-cli/issues"
+  },
+  "homepage": "https://github.com/bxav/ai-product-analysis-cli#readme",
   "dependencies": {
     "@langchain/community": "^0.2.19",
     "@langchain/core": "^0.2.16",
@@ -56,21 +75,8 @@
     "tsconfig-paths": "^4.2.0",
     "typescript": "^5.5.3"
   },
-  "jest": {
-    "moduleFileExtensions": [
-      "js",
-      "json",
-      "ts"
-    ],
-    "rootDir": "src",
-    "testRegex": ".*\\.spec\\.ts$",
-    "transform": {
-      "^.+\\.(t|j)s$": "ts-jest"
-    },
-    "collectCoverageFrom": [
-      "**/*.(t|j)s"
-    ],
-    "coverageDirectory": "../coverage",
-    "testEnvironment": "node"
-  }
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "packageManager": "pnpm@8.0.0"
 }
