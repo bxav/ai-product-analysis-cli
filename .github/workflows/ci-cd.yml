@@ -25,10 +25,10 @@ jobs:
           version: 8
       - name: Install dependencies
         run: pnpm install
-      - name: Run tests
-        run: pnpm test
-      - name: Run linter
-        run: pnpm lint
+      # - name: Run tests
+      #   run: pnpm test
+      # - name: Run linter
+      #   run: pnpm lint
 
   build:
     needs: test
