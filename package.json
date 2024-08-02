@@ -1,5 +1,5 @@
 {
-  "name": "ai-product-analysis-cli",
+  "name": "ai-temp-product-analysis-cli",
   "version": "1.0.3",
   "description": "CLI tool for AI product analysis",
   "bin": {
