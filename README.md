@@ -16,6 +16,26 @@ This project is inspired by the STORM (Synthesis of Topic Outlines through Retri
 - Produces a final, detailed analysis report in Markdown format
 - Supports analysis of AI products across various domains and use cases
 
+## Installation
+
+You can install the AI Product Analysis CLI globally using npm or pnpm:
+
+```bash
+npm install -g ai-product-analysis-cli
+# or
+pnpm add -g ai-product-analysis-cli
+```
+
+## Usage
+
+After installation, you can use the CLI as follows:
+
+```bash
+ai-product-analysis analyze "AI Product Name" --output analysis.md
+```
+
+This will generate an analysis of the specified AI product, saving the output to the specified file.
+
 ## How It Works
 
 The AI Product Analysis CLI uses a sophisticated graph-based approach to generate comprehensive analyses, inspired by the STORM methodology. Here's a high-level overview of the process:
@@ -63,32 +83,25 @@ TAVILY_API_KEY=your_tavily_api_key
 
 Replace `your_openai_api_key` and `your_tavily_api_key` with your actual API keys.
 
-## Usage
-
-After setting up the project, you can use the CLI as follows:
-
-```bash
-node dist/main.js analyze "AI Product Name" --output analysis.md
-```
-
-This will generate an analysis of the specified AI product, saving the output to the specified file.
-
 ## Development
 
 To set up the project for development:
 
 1. Clone the repository:
+
    ```bash
    git clone https://github.com/yourusername/ai-product-analysis-cli.git
    cd ai-product-analysis-cli
    ```
 
 2. Install dependencies:
+
    ```bash
    pnpm install
    ```
 
 3. Build the project:
+
    ```bash
    pnpm run build
    ```
